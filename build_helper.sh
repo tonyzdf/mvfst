@@ -21,12 +21,11 @@ Usage ${0##*/} [-h|?] [-p PATH] [-i INSTALL_PREFIX]
   -p BUILD_DIR                           (optional): Path of the base dir for mvfst
   -i INSTALL_PREFIX                      (optional): install prefix path
   -m                                     (optional): Build folly without jemalloc
-  -s                                     (optional): Skip installing system package dependencies
   -h|?                                               Show this help message
 EOF
 }
 
-while getopts ":hp:i:ms" arg; do
+while getopts ":hp:i:m" arg; do
   case $arg in
     p)
       BUILD_DIR="${OPTARG}"
@@ -36,9 +35,6 @@ while getopts ":hp:i:ms" arg; do
       ;;
     m)
       MVFST_FOLLY_USE_JEMALLOC="n"
-      ;;
-    s)
-      MVFST_SKIP_SYSTEM_DEPENDENCIES=true
       ;;
     h | *) # Display help.
       usage
@@ -127,8 +123,7 @@ function install_dependencies_mac() {
     snappy                   \
     xz                       \
     openssl                  \
-    libsodium                \
-    fmt
+    libsodium
 
   brew link                 \
     boost                   \
@@ -139,8 +134,7 @@ function install_dependencies_mac() {
     lz4                     \
     snappy                  \
     xz                      \
-    libsodium               \
-    fmt
+    libsodium
 }
 
 function setup_folly() {
@@ -150,18 +144,14 @@ function setup_folly() {
   if [ ! -d "$FOLLY_DIR" ] ; then
     echo -e "${COLOR_GREEN}[ INFO ] Cloning folly repo ${COLOR_OFF}"
     git clone https://github.com/facebook/folly.git "$FOLLY_DIR"
-    if [[ -z "${MVFST_SKIP_SYSTEM_DEPENDENCIES-}" ]]; then
-      echo -e "${COLOR_GREEN}[ INFO ] install dependencies ${COLOR_OFF}"
-      if [ "$Platform" = "Linux" ]; then
-        install_dependencies_linux
-      elif [ "$Platform" = "Mac" ]; then
-          install_dependencies_mac
-      else
-        echo -e "${COLOR_RED}[ ERROR ] Unknown platform: $Platform ${COLOR_OFF}"
-        exit 1
-      fi
+    echo -e "${COLOR_GREEN}[ INFO ] install dependencies ${COLOR_OFF}"
+    if [ "$Platform" = "Linux" ]; then
+      install_dependencies_linux
+    elif [ "$Platform" = "Mac" ]; then
+        install_dependencies_mac
     else
-      echo -e "${COLOR_GREEN}[ INFO ] Skipping installing dependencies ${COLOR_OFF}"
+      echo -e "${COLOR_RED}[ ERROR ] Unknown platform: $Platform ${COLOR_OFF}"
+      exit 1
     fi
   fi
 
@@ -232,15 +222,15 @@ function detect_platform() {
 }
 
 detect_platform
-setup_folly
-setup_fizz
+#setup_folly
+#setup_fizz
 
 # build mvfst:
 cd "$MVFST_BUILD_DIR" || exit
 cmake -DCMAKE_PREFIX_PATH="$FOLLY_INSTALL_DIR"    \
  -DCMAKE_INSTALL_PREFIX="$MVFST_INSTALL_DIR"      \
  -DCMAKE_BUILD_TYPE=RelWithDebInfo                \
- -DBUILD_TESTS=On                                 \
+ -DBUILD_TESTS=Off                                 \
   ../..
 make -j "$nproc"
 echo -e "${COLOR_GREEN}MVFST build is complete. To run unit test: \

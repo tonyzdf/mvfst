@@ -7,14 +7,13 @@ add_library(
   mvfst_client STATIC
   QuicClientTransport.cpp
   handshake/ClientHandshake.cpp
-  handshake/FizzClientQuicHandshakeContext.cpp
-  handshake/FizzClientHandshake.cpp
   state/ClientStateMachine.cpp
 )
 
 target_include_directories(
   mvfst_client PUBLIC
   $<BUILD_INTERFACE:${QUIC_FBCODE_ROOT}>
+  $<BUILD_INTERFACE:${LIBFIZZ_INCLUDE_DIR}>
   $<INSTALL_INTERFACE:include/>
 )
 
@@ -26,9 +25,8 @@ target_compile_options(
 
 add_dependencies(
   mvfst_client
-  mvfst_bufutil
+  ${LIBFIZZ_LIBRARY}
   mvfst_flowcontrol
-  mvfst_fizz_handshake
   mvfst_happyeyeballs
   mvfst_loss
   mvfst_qlogger
@@ -41,7 +39,6 @@ target_link_libraries(
   mvfst_client PUBLIC
   Folly::folly
   mvfst_flowcontrol
-  mvfst_fizz_handshake
   mvfst_happyeyeballs
   mvfst_loss
   mvfst_qlogger

@@ -1,8 +1,7 @@
 
 ![alt text](logo.png "MVFST")
 
-[![Travis Build Status](https://api.travis-ci.com/facebookincubator/mvfst.svg?branch=master)](https://travis-ci.com/facebookincubator/mvfst)
-[![CI Status](https://github.com/facebookincubator/mvfst/workflows/CI/badge.svg?branch=master)](https://github.com/facebookincubator/mvfst/actions?workflow=CI)
+[![Build Status](https://api.travis-ci.com/facebookincubator/mvfst.svg?branch=master)](https://travis-ci.com/facebookincubator/mvfst)
 
 ## Introduction
 `mvfst` (Pronounced *move fast*) is a client and server implementation of [IETF QUIC](https://tools.ietf.org/html/draft-ietf-quic-transport-20) protocol in C++ by Facebook. QUIC is a UDP based reliable, multiplexed transport protocol that will become an internet standard. The goal of `mvfst` is to build a performant implementation of the QUIC transport protocol that applications could adapt for use cases on both the internet and the data-center. `mvfst` has been tested at scale on android, iOS apps, as well as servers and has several features to support large scale deployments.
@@ -73,19 +72,6 @@ sudo apt-get install         \
 
 Then, build and install folly and fizz
 
-Please note that folly depends on latest fmt installed from source. The
-following commands will download, compile, and install fmt.
-
-```
-git clone https://github.com/fmtlib/fmt.git && cd fmt
-
-mkdir _build && cd _build
-cmake ..
-
-make -j$(nproc)
-sudo make install
-```
-
 Alternatively, run the helper script `build_helper.sh` in this subdirectory.
 It will install and link the required dependencies and also build folly and fizz.
 This may take several minutes the first time.
@@ -113,11 +99,12 @@ By default the build script `build_helper.sh` enables the building of test targe
 ## Run a sample client and server
 Building the test targets of `mvfst` (or via `build_helper.sh`) should automatically build the sample client and server binaries into the default `_build/build` directory (or whichever target directory was specified). The server will automatically bind to `::1` by default if no host is used, but you can then spin a simple echo server by running:
 ```
-./_build/build/quic/samples/echo -mode=server -host=<host> -port=<port>
+./_build/build/quic/samples/echo -mode=server -host=0.0.0.0 -port=8081
 ```
+-log_dir=./log -v 15
 and to run a client:
 ```
-./_build/build/quic/samples/echo -mode=client -host=<host> -port=<port>
+./_build/build/quic/samples/echo -mode=client -host=127.0.0.1 -port=8081
 ```
 For more options, see
 ```
@@ -132,7 +119,7 @@ We'd love to have your help in making `mvfst` better. If you're interested, plea
 read our guide to [guide to contributing](CONTRIBUTING.md)
 
 Please also join our
-[slack](https://mvfst.slack.com) to ask questions or start discussions.
+[slack](https://join.slack.com/t/mvfst/shared_invite/enQtNjE0ODIwNDU3MDU4LWFkOTc0ZTQ4NzczZmE2MjRlMjQxNWQxNDAyYzAzMDQ5MTQ0ZGI0YTJhZWM0MThhM2FiYzc0Zjg3MTYyNDg2MWI) to ask questions or start discussions.
 
 ## License
 `mvfst` is MIT licensed, as found in the LICENSE file.

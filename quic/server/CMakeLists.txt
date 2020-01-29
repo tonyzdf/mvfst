@@ -20,6 +20,7 @@ target_include_directories(
   mvfst_server PUBLIC
   $<BUILD_INTERFACE:${QUIC_FBCODE_ROOT}>
   $<BUILD_INTERFACE:${LIBFIZZ_INCLUDE_DIR}>
+  $<BUILD_INTERFACE:${OPENSSL_INCLUDE_DIR}>
   $<INSTALL_INTERFACE:include/>
 )
 
@@ -34,9 +35,8 @@ add_dependencies(
   mvfst_constants
   mvfst_codec
   mvfst_codec_types
-  mvfst_fizz_handshake
+  mvfst_handshake
   mvfst_qlogger
-  mvfst_state_ack_handler
   mvfst_transport
 )
 
@@ -44,12 +44,12 @@ target_link_libraries(
   mvfst_server PUBLIC
   Folly::folly
   ${LIBFIZZ_LIBRARY}
+  ${OPENSSL_LIBRARY}
   mvfst_constants
   mvfst_codec
   mvfst_codec_types
-  mvfst_fizz_handshake
+  mvfst_handshake
   mvfst_qlogger
-  mvfst_state_ack_handler
   mvfst_transport
 )
 
